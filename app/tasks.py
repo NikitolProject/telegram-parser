@@ -1,0 +1,110 @@
+import csv
+import contextlib
+
+from typing import List
+
+from channels.db import database_sync_to_async
+
+from telethon import TelegramClient
+from telethon.tl.functions.messages import GetHistoryRequest
+from telethon.tl.patched import Message
+from telethon.tl.types import PeerChannel
+
+from app.models import TelegramChannel, TelegramUser
+
+api_id = 14429679
+api_hash = '5a91e2bfd9b57d681a2095b13af3072f'
+
+
+async def start_parsing(channel_ids: List[int], post_count: int) -> None:
+    print("start parse")
+    channel_ids = await get_telegram_channels_by_ids(channel_ids=channel_ids)
+
+    client = TelegramClient('79608711591', api_id, api_hash)
+    await client.start()
+
+    await parse_for_channels(client, channel_ids, post_count)
+
+
+async def parse_for_channels(client: TelegramClient, channel_ids: List[int], post_count: int) -> None:
+    users = set()
+
+    for channel_id in channel_ids:
+        channel = await client.get_entity(PeerChannel(channel_id))
+
+        offset_id = 0
+        limit = 100 if post_count >= 100 else post_count
+        final_limit = 0 if post_count >= 100 and post_count % 100 == 0 or post_count < 100 else post_count % 100
+        current_post_count = post_count
+
+        all_messages = []
+
+        while current_post_count > 0:
+            history = await client(
+                GetHistoryRequest(
+                    peer=channel,
+                    offset_id=offset_id,
+                    offset_date=None,
+                    add_offset=0,
+                    limit=limit if post_count >= 100 and current_post_count >= 100 else final_limit,
+                    max_id=0,
+                    min_id=0,
+                    hash=0
+                )
+            )
+
+            if not history.messages:
+                break
+
+            messages = history.messages
+            all_messages.extend(messages)
+            offset_id = messages[len(messages) - 1].id
+            current_post_count -= limit if post_count >= 100 and current_post_count >= 100 or post_count < 100 else final_limit
+
+        offset_id = 0
+        limit = 100
+
+        for message in all_messages:
+            with contextlib.suppress(Exception):
+                if message.replies is None:
+                    continue
+
+                while True:
+                    messages = await client.get_messages(
+                        channel,
+                        offset_id=offset_id,
+                        offset_date=None,
+                        add_offset=0,
+                        limit=limit,
+                        max_id=0,
+                        min_id=0,
+                        reply_to=message.id
+                    )
+
+                    if not messages:
+                        break
+
+                    messages = messages
+
+                    for comment in messages:
+                        user = await client.get_entity(comment.from_id)
+                        print(f"{user.id},{user.username}")
+                        users.add(f"{user.id},{user.username}")
+                    
+                    offset_id = messages[len(messages) - 1].id
+
+    print("parser completed")
+    await create_telegram_users(users)
+    print("new users saved.")
+
+
+@database_sync_to_async
+def get_telegram_channels_by_ids(channel_ids: List[int]) -> List[int]:
+    return [obj.channel_id for obj in TelegramChannel.objects.in_bulk(channel_ids).values()]
+
+
+@database_sync_to_async
+def create_telegram_users(users: List[str]) -> None:
+    existing_user_ids = TelegramUser.objects.values_list('user_id', flat=True)
+    new_users = [user.split(",") for user in users if user.split(",")[0] not in existing_user_ids]
+    TelegramUser.objects.bulk_create([TelegramUser(user_id=int(user[0]), username=user[1]) for user in new_users])
