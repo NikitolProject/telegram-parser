@@ -26,6 +26,24 @@ services:
     networks:
       - fnf-django
 
+  db:
+    image: postgres:14.0-alpine
+    restart: always
+    cap_add:
+      - SYS_NICE
+    environment:
+      PGDATA: /data/postgres
+      POSTGRES_USER: admin
+      POSTGRES_DB: admin
+      POSTGRES_PASSWORD: "POSzolGy7o9nCdfBaiNDSGTQQaRERLaQ"
+    volumes:
+      - "./data:/data/postgres"
+      - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+    ports:
+      - "5432:5432"
+    networks:
+      - fnf-django
+
 volumes:
   static_volume:
 
