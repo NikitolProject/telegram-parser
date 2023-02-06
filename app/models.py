@@ -22,7 +22,7 @@ class TelegramUser(models.Model):
     username_tag.short_description = "Username пользователя"
 
     def __str__(self: "TelegramUser") -> str:
-        return self.username
+        return self.username if self.username else f"Telegram User ({self.pk})"
 
 
 class TelegramChannel(models.Model):
@@ -52,4 +52,4 @@ class TelegramChannel(models.Model):
     url_tag.short_description = "Ссылка на канал"
 
     def __str__(self: "TelegramChannel") -> str:
-        return self.title
+        return self.title if self.title else f"Telegram Channel ({self.pk})"
