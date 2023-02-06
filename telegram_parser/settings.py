@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'app',
+    'telegram_parser',
 
     'django.contrib.admin',
     'django.contrib.auth',
