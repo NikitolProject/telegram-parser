@@ -43,16 +43,15 @@ async def mailing_users(client: TelegramClient, user_ids: List[int], text: str, 
     print("start mailing users")
     for user_id in user_ids:
         print(user_id)
-        with contextlib.suppress(Exception):
-            user = await client.get_entity(PeerUser(int(user_id)))
+        user = await client.get_entity(PeerUser(int(user_id)))
 
-            if file:
-                with BytesIO(file) as bytes_io:
-                    await client.send_file(user, bytes_io, caption=text)
-            else:
-                await client.send_message(user, text)
-            
-            await asyncio.sleep(5)
+        if file:
+            with BytesIO(file) as bytes_io:
+                await client.send_file(user, bytes_io, caption=text)
+        else:
+            await client.send_message(user, text)
+        
+        await asyncio.sleep(5)
 
     admin = await client.get_entity('nick_test_for_bots')
     await client.send_message(admin, f"⚡️ Рассылка на {len(user_ids)} пользователей успешно завершена!")
