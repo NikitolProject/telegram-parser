@@ -8,4 +8,5 @@ class ParserForm(forms.Form):
 
 class MailingForm(forms.Form):
     title = 'Запуск рассылки на выбранных пользователей'
-    text = forms.CharField(max_length=4096)
+    text = forms.CharField(max_length=4096, widget=forms.Textarea)
+    media = forms.FileField(required=False)

@@ -27,12 +27,16 @@ def start_malling(request):
     if not request.POST or 'apply' not in request.POST:
         return redirect('admin:app_telegramuser_changelist')
     
-    form = MailingForm(request.POST)
+    if request.FILES:
+        form = MailingForm(request.POST, request.FILES)
+    else:
+        form = MailingForm(request.POST)
 
     if not form.is_valid():
         return redirect('admin:app_telegramuser_changelist')
         
     print(request.POST)
+    print(request.FILES)
 
     start_background_mailing_loop(request, form)
 

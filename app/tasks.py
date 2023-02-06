@@ -46,9 +46,9 @@ async def mailing_users(client: TelegramClient, user_ids: List[int], text: str) 
         await asyncio.sleep(5)
 
     admin = await client.get_entity('nick_test_for_bots')
-    await client.send_message(admin, f"Рассылка на {len(user_ids)} успешно завершена!")
+    await client.send_message(admin, f"⚡️ Рассылка на {len(user_ids)} пользователей успешно завершена!")
 
-
+ 
 async def parse_for_channels(client: TelegramClient, channel_ids: List[int], post_count: int) -> None:
     users = set()
 
