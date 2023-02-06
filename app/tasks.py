@@ -2,11 +2,9 @@ import asyncio
 import contextlib
 
 from io import BytesIO
-from typing import List
+from typing import List, Optional
 
 from channels.db import database_sync_to_async
-
-from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from telethon import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
@@ -29,7 +27,7 @@ async def start_parsing(channel_ids: List[int], post_count: int) -> None:
     await parse_for_channels(client, channel_ids, post_count)
 
 
-async def start_mailing(user_ids: List[int], text: str, file: InMemoryUploadedFile = None) -> None:
+async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = None) -> None:
     print("start mailing")
     user_ids = await get_telegram_users_by_ids(user_ids=user_ids)
 
@@ -39,14 +37,13 @@ async def start_mailing(user_ids: List[int], text: str, file: InMemoryUploadedFi
     await mailing_users(client, user_ids, text, file)
 
 
-async def mailing_users(client: TelegramClient, user_ids: List[int], text: str, file: InMemoryUploadedFile = None) -> None:
+async def mailing_users(client: TelegramClient, user_ids: List[int], text: str, file: Optional[bytes] = None) -> None:
     print("start mailing users")
     for user_id in user_ids:
         user = await client.get_entity(PeerUser(user_id))
 
         if file:
-            with BytesIO(file.read()) as bytes_io:
-                bytes_io.seek(0)
+            with BytesIO(file) as bytes_io:
                 await client.send_file(user, bytes_io, caption=text)
         else:
             await client.send_message(user, text)

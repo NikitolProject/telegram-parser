@@ -28,8 +28,11 @@ def start_malling(request):
     if not request.POST or 'apply' not in request.POST:
         return redirect('admin:app_telegramuser_changelist')
     
+    file = None
+
     if request.FILES:
         form = MailingForm(request.POST, request.FILES)
+        file = form.cleaned_data['media'].read()
     else:
         form = MailingForm(request.POST)
 
@@ -39,7 +42,7 @@ def start_malling(request):
     print(request.POST)
     print(request.FILES)
 
-    start_background_mailing_loop(request, form)
+    start_background_mailing_loop(request, form, file)
 
     return render(request, 'admin/malling_confirm.html', context={})
 
@@ -50,9 +53,9 @@ def start_background_parsing_loop(request, form):
     t.start()
 
 
-def start_background_mailing_loop(request, form):
+def start_background_mailing_loop(request, form, file):
     loop = asyncio.new_event_loop()
-    t = threading.Thread(target=run_async_mailing_loop, args=(loop, request, form))
+    t = threading.Thread(target=run_async_mailing_loop, args=(loop, request, form, file))
     t.start()
 
 
@@ -67,12 +70,12 @@ def run_async_parsing_loop(loop, request, form):
     loop.close()
 
 
-def run_async_mailing_loop(loop, request, form):
+def run_async_mailing_loop(loop, request, form, file):
     asyncio.set_event_loop(loop)
     loop.run_until_complete(
         start_mailing(
             [int(uid) for uid in request.POST['_selected_action']], 
-            form.cleaned_data['text'], form.cleaned_data['media'] if request.FILES else None
+            form.cleaned_data['text'], file
         )
     )
     loop.close()
