@@ -24,6 +24,7 @@ WORKDIR $APP_HOME
 # install dependencies
 RUN pip install --upgrade pip
 COPY ./requirements.txt .
+COPY ./static/. $HOME/static
 RUN pip install -r requirements.txt
 
 ## copy project
