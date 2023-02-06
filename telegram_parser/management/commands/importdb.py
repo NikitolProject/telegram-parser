@@ -24,6 +24,6 @@ class Command(BaseCommand):
         users = []
 
         for row in data_read:
-            users.append(TelegramUser(user_id=row[0], user_name=row[1]))
+            users.append(TelegramUser(user_id=row[0], username=row[1]))
 
         TelegramUser.objects.bulk_create(users)
