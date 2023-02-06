@@ -31,30 +31,30 @@ async def start_parsing(channel_ids: List[int], post_count: int) -> None:
 async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = None) -> None:
     print("start mailing")
     print(user_ids)
-    user_ids = await get_telegram_users_by_ids(user_ids=user_ids)
+    user_names = await get_telegram_users_by_ids(user_ids=user_ids)
 
     client = TelegramClient('79851659771', api_id, api_hash)
     await client.start()
 
-    await mailing_users(client, user_ids, text, file)
+    await mailing_users(client, user_names, text, file)
 
 
-async def mailing_users(client: TelegramClient, user_ids: List[int], text: str, file: Optional[bytes] = None) -> None:
+async def mailing_users(client: TelegramClient, user_names: List[str], text: str, file: Optional[bytes] = None) -> None:
     print("start mailing users")
-    for user_id in user_ids:
-        print(user_id)
-        user = await client.get_entity(PeerUser(int(user_id)))
+    for user_name in user_names:
+        with contextlib.suppress(Exception):
+            user = await client.get_entity(user_name)
 
-        if file:
-            with BytesIO(file) as bytes_io:
-                await client.send_file(user, bytes_io, caption=text)
-        else:
-            await client.send_message(user, text)
-        
-        await asyncio.sleep(5)
+            if file:
+                with BytesIO(file) as bytes_io:
+                    await client.send_file(user, bytes_io, caption=text)
+            else:
+                await client.send_message(user, text)
+            
+            await asyncio.sleep(5)
 
     admin = await client.get_entity('nick_test_for_bots')
-    await client.send_message(admin, f"⚡️ Рассылка на {len(user_ids)} пользователей успешно завершена!")
+    await client.send_message(admin, f"⚡️ Рассылка на {len(user_names)} пользователей успешно завершена!")
 
  
 async def parse_for_channels(client: TelegramClient, channel_ids: List[int], post_count: int) -> None:
@@ -148,10 +148,10 @@ def get_telegram_channels_by_ids(channel_ids: List[int]) -> List[int]:
 
 
 @database_sync_to_async
-def get_telegram_users_by_ids(user_ids: List[int]) -> List[int]:
+def get_telegram_users_by_ids(user_ids: List[int]) -> List[str]:
     if isinstance(user_ids, str):
-        return [obj.user_id for obj in TelegramUser.objects.in_bulk([int(user_ids)]).values()]
-    return [obj.user_id for obj in TelegramUser.objects.in_bulk([int(uid) for uid in user_ids]).values()]
+        return [obj.username for obj in TelegramUser.objects.in_bulk([int(user_ids)]).values()]
+    return [obj.username for obj in TelegramUser.objects.in_bulk([int(uid) for uid in user_ids]).values()]
 
 
 @database_sync_to_async
