@@ -41,7 +41,7 @@ async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = 
 async def mailing_users(client: TelegramClient, user_ids: List[int], text: str, file: Optional[bytes] = None) -> None:
     print("start mailing users")
     for user_id in user_ids:
-        user = await client.get_entity(PeerUser(user_id))
+        user = await client.get_entity(PeerUser(int(user_id)))
 
         if file:
             with BytesIO(file) as bytes_io:
@@ -59,7 +59,7 @@ async def parse_for_channels(client: TelegramClient, channel_ids: List[int], pos
     users = set()
 
     for channel_id in channel_ids:
-        channel = await client.get_entity(PeerChannel(channel_id))
+        channel = await client.get_entity(PeerChannel(int(channel_id)))
 
         offset_id = 0
         limit = 100 if post_count >= 100 else post_count
@@ -137,7 +137,7 @@ async def get_telegram_channel_info_by_link(link: str) -> tuple:
     print(channel)
     print("join channel")
 
-    return (channel.id, channel.title)
+    return (str(channel.id), channel.title)
 
 
 @database_sync_to_async
@@ -154,4 +154,4 @@ def get_telegram_users_by_ids(user_ids: List[int]) -> List[int]:
 def create_telegram_users(users: List[str]) -> None:
     existing_user_ids = TelegramUser.objects.values_list('user_id', flat=True)
     new_users = [user.split(",") for user in users if user.split(",")[0] not in existing_user_ids]
-    TelegramUser.objects.bulk_create([TelegramUser(user_id=int(user[0]), username=user[1]) for user in new_users])
+    TelegramUser.objects.bulk_create([TelegramUser(user_id=user[0], username=user[1]) for user in new_users])
