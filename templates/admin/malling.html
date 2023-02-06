@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-    <form action="http://am-bet-parser.ru/parse/" method="post">
+    <form action="http://am-bet-parser.ru/malling/" method="post">
         {% csrf_token %}
         <fieldset class="module aligned">
             {% for obj in queryset.all %}

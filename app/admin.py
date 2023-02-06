@@ -1,22 +1,29 @@
 from django.contrib import admin
 from django.shortcuts import render, redirect
 
-from app.forms import ParserForm
+from app.forms import ParserForm, MailingForm
 from app.models import TelegramChannel, TelegramUser
-from app.decorators import action_form
+from app.decorators import action_parser_form, action_malling_form
 
 # my_action.short_description = "Update selected articles"
 
 
 class TelegramChannelAdmin(admin.ModelAdmin):
     list_display = ('channel_id_tag', 'title_tag')
-    actions = ['my_action']
+    actions = ['start_parser']
 
-    @action_form(ParserForm)
-    def my_action(modeladmin, request, queryset, form):
-        post_count = form.cleaned_data['post_count']
+    @action_parser_form(ParserForm)
+    def start_parser(modeladmin, request, queryset, form):
+        pass
 
-        print(post_count)
+
+class TelegramChannelAdmin(admin.ModelAdmin):
+    list_display = ('channel_id_tag', 'title_tag')
+    actions = ['start_malling']
+
+    @action_malling_form(MailingForm)
+    def start_malling(modeladmin, request, queryset, form):
+        pass
 
 
 # Register your models here.

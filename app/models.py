@@ -21,6 +21,9 @@ class TelegramUser(models.Model):
     
     username_tag.short_description = "Username пользователя"
 
+    def __str__(self: "TelegramUser") -> str:
+        return self.username
+
 
 class TelegramChannel(models.Model):
 
@@ -33,17 +36,20 @@ class TelegramChannel(models.Model):
     title = models.CharField(max_length=255, null=True, blank=True)
     url = models.CharField(max_length=255)
 
-    def channel_id_tag(self: "TelegramUser") -> int:
+    def channel_id_tag(self: "TelegramChannel") -> int:
         return self.channel_id
     
     channel_id_tag.short_description = "ID канала"
 
-    def title_tag(self: "TelegramUser") -> str:
+    def title_tag(self: "TelegramChannel") -> str:
         return self.title
     
     title_tag.short_description = "Название канала"
 
-    def url_tag(self: "TelegramUser") -> str:
+    def url_tag(self: "TelegramChannel") -> str:
         return self.url
     
     url_tag.short_description = "Ссылка на канал"
+
+    def __str__(self: "TelegramChannel") -> str:
+        return self.title
