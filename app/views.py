@@ -32,7 +32,8 @@ def start_malling(request):
 
     if request.FILES:
         form = MailingForm(request.POST, request.FILES)
-        file = form.cleaned_data['media'].read()
+        file = form.cleaned_data['media']
+        file = file.read()
     else:
         form = MailingForm(request.POST)
 
