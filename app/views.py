@@ -36,7 +36,7 @@ def start_malling(request):
         return redirect('admin:app_telegramuser_changelist')
         
     print(request.POST)
-    print(form.cleaned_data['media'])
+    print(type(form.cleaned_data['media']))
 
     start_background_mailing_loop(request, form)
 
