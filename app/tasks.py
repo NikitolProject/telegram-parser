@@ -1,7 +1,7 @@
-import csv
 import asyncio
 import contextlib
 
+from io import BytesIO
 from typing import List
 
 from channels.db import database_sync_to_async
@@ -30,7 +30,7 @@ async def start_parsing(channel_ids: List[int], post_count: int) -> None:
 
 
 async def start_mailing(user_ids: List[int], text: str, file: InMemoryUploadedFile = None) -> None:
-    print("start parse")
+    print("start mailing")
     user_ids = await get_telegram_users_by_ids(user_ids=user_ids)
 
     client = TelegramClient('79608711591', api_id, api_hash)
@@ -45,7 +45,9 @@ async def mailing_users(client: TelegramClient, user_ids: List[int], text: str, 
         user = await client.get_entity(PeerUser(user_id))
 
         if file:
-            await client.send_file(user, file, caption=text)
+            with BytesIO(file.read()) as bytes_io:
+                bytes_io.seek(0)
+                await client.send_file(user, bytes_io, caption=text)
         else:
             await client.send_message(user, text)
         
