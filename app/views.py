@@ -7,6 +7,7 @@ from app.forms import ParserForm, MailingForm
 from app.tasks import start_parsing, start_mailing
 
 
+
 def start_parse(request):
     if not request.POST or 'apply' not in request.POST:
         return redirect('admin:app_telegramchannel_changelist')
@@ -36,7 +37,7 @@ def start_malling(request):
         return redirect('admin:app_telegramuser_changelist')
         
     print(request.POST)
-    print(type(form.cleaned_data['media']))
+    print(request.FILES)
 
     start_background_mailing_loop(request, form)
 
@@ -71,7 +72,7 @@ def run_async_mailing_loop(loop, request, form):
     loop.run_until_complete(
         start_mailing(
             [int(uid) for uid in request.POST['_selected_action']], 
-            form.cleaned_data['text']
+            form.cleaned_data['text'], form.cleaned_data['media'] if request.FILES else None
         )
     )
     loop.close()

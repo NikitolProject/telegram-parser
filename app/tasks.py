@@ -6,6 +6,8 @@ from typing import List
 
 from channels.db import database_sync_to_async
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
 from telethon import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
 from telethon.tl.patched import Message
@@ -27,22 +29,27 @@ async def start_parsing(channel_ids: List[int], post_count: int) -> None:
     await parse_for_channels(client, channel_ids, post_count)
 
 
-async def start_mailing(user_ids: List[int], text: str) -> None:
+async def start_mailing(user_ids: List[int], text: str, file: InMemoryUploadedFile = None) -> None:
     print("start parse")
     user_ids = await get_telegram_users_by_ids(user_ids=user_ids)
 
     client = TelegramClient('79608711591', api_id, api_hash)
     await client.start()
 
-    await mailing_users(client, user_ids, text)
+    await mailing_users(client, user_ids, text, file)
 
 
-async def mailing_users(client: TelegramClient, user_ids: List[int], text: str) -> None:
+async def mailing_users(client: TelegramClient, user_ids: List[int], text: str, file: InMemoryUploadedFile = None) -> None:
     print("start mailing users")
     for user_id in user_ids:
         with contextlib.suppress(Exception):
             user = await client.get_entity(PeerUser(user_id))
-            await client.send_message(user, text)
+
+            if file:
+                await client.send_file(user, file.read(), caption=text)
+            else:
+                await client.send_message(user, text)
+        
         await asyncio.sleep(5)
 
     admin = await client.get_entity('nick_test_for_bots')
