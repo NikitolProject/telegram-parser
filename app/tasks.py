@@ -44,7 +44,7 @@ async def mailing_users(client: TelegramClient, user_ids: List[int], text: str, 
 
         if file:
             with BytesIO(file) as bytes_io:
-                await client.send_file(user, bytes_io, caption=text)
+                await client.send_file(user, bytes_io, caption=text, supports_streaming=True)
         else:
             await client.send_message(user, text)
         
