@@ -30,6 +30,7 @@ async def start_parsing(channel_ids: List[int], post_count: int) -> None:
 
 async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = None) -> None:
     print("start mailing")
+    print(user_ids)
     user_ids = await get_telegram_users_by_ids(user_ids=user_ids)
 
     client = TelegramClient('79851659771', api_id, api_hash)
