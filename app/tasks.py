@@ -130,9 +130,12 @@ async def parse_for_channels(client: TelegramClient, channel_ids: List[int], pos
 async def get_telegram_channel_info_by_link(link: str) -> tuple:
     client = TelegramClient('79851659771', api_id, api_hash)
     await client.start()
+    print("start parser")
 
     channel = await client.get_entity(link)
+    print(channel)
     await client(JoinChannelRequest(channel))
+    print("join channel")
 
     return (channel.id, channel.title)
 
