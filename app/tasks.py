@@ -45,7 +45,7 @@ async def mailing_users(client: TelegramClient, user_ids: List[int], text: str, 
         user = await client.get_entity(PeerUser(user_id))
 
         if file:
-            await client.send_file(user, file.read(), caption=text)
+            await client.send_file(user, file, caption=text)
         else:
             await client.send_message(user, text)
         
