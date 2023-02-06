@@ -47,7 +47,7 @@ def start_background_parsing_loop(request, form):
 
 def start_background_mailing_loop(request, form):
     loop = asyncio.new_event_loop()
-    t = threading.Thread(target=run_async_parsing_loop, args=(loop, request, form))
+    t = threading.Thread(target=run_async_mailing_loop, args=(loop, request, form))
     t.start()
 
 
