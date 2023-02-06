@@ -19,7 +19,7 @@ class Command(BaseCommand):
         with open("members.csv") as fp:
             reader = csv.reader(fp, delimiter="\n")
             # next(reader, None)  # skip the headers
-            data_read = [(row.split(".")[0], row.split(".")[1]) for row in reader]
+            data_read = [(row[0].split(".")[0], row[0].split(".")[1]) for row in reader]
 
         users = []
 
