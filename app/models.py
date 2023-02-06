@@ -8,7 +8,7 @@ class TelegramUser(models.Model):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
-    user_id = models.CharField()
+    user_id = models.CharField(max_length=255, null=True, blank=True)
     username = models.CharField(max_length=255, null=True, blank=True)
 
     def user_id_tag(self: "TelegramUser") -> str:
@@ -32,7 +32,7 @@ class TelegramChannel(models.Model):
         verbose_name = "Канал"
         verbose_name_plural = "Каналы"
 
-    channel_id = models.CharField(null=True, blank=True)
+    channel_id = models.CharField(max_length=255, null=True, blank=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     url = models.CharField(max_length=255)
 
