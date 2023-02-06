@@ -7,6 +7,10 @@ services:
     # command: gunicorn app.wsgi:application --bind 0.0.0.0:8000
     ports:
       - "${APP_PORT:-8080}:8000"
+    depends_on:
+      - db
+    links:
+      - db
     volumes:
       - .:/home/app/web
       - static_volume:/home/app/static
@@ -25,7 +29,6 @@ services:
       - static_volume:/home/app/static
     networks:
       - fnf-django
-
   db:
     image: postgres:14.0-alpine
     restart: always
