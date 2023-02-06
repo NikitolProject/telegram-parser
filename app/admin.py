@@ -19,15 +19,6 @@ class TelegramChannelAdmin(admin.ModelAdmin):
     def start_parser(modeladmin, request, queryset, form):
         pass
 
-
-class TelegramUserAdmin(admin.ModelAdmin):
-    list_display = ('user_id_tag', 'username_tag')
-    actions = ['start_malling']
-
-    @action_malling_form(MailingForm)
-    def start_malling(modeladmin, request, queryset, form):
-        pass
-
     def save_model(self, request, obj, form, change) -> "TelegramChannel":
         if change:
             print("change")
@@ -47,6 +38,15 @@ class TelegramUserAdmin(admin.ModelAdmin):
             print("obj saved")
 
         super().save_model(request, obj, form, change)
+
+
+class TelegramUserAdmin(admin.ModelAdmin):
+    list_display = ('user_id_tag', 'username_tag')
+    actions = ['start_malling']
+
+    @action_malling_form(MailingForm)
+    def start_malling(modeladmin, request, queryset, form):
+        pass
 
 
 # Register your models here.
