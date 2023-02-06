@@ -41,6 +41,7 @@ async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = 
 async def mailing_users(client: TelegramClient, user_ids: List[int], text: str, file: Optional[bytes] = None) -> None:
     print("start mailing users")
     for user_id in user_ids:
+        print(user)
         user = await client.get_entity(PeerUser(int(user_id)))
 
         if file:
