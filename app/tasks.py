@@ -132,9 +132,9 @@ async def get_telegram_channel_info_by_link(link: str) -> tuple:
     await client.start()
     print("start parser")
 
+    await client(JoinChannelRequest(link))
     channel = await client.get_entity(link)
     print(channel)
-    await client(JoinChannelRequest(channel))
     print("join channel")
 
     return (channel.id, channel.title)
