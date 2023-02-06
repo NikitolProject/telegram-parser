@@ -28,25 +28,25 @@ class TelegramUserAdmin(admin.ModelAdmin):
     def start_malling(modeladmin, request, queryset, form):
         pass
 
-    def save_model(self, request, obj, form, change) -> "TelegramChannel":
-        if change:
-            print("change")
-            data = async_to_sync(get_telegram_channel_info_by_link)(obj.url)
-            print(data)
-            obj.channel_id = data[0]
-            obj.title = data[1]
-            obj.save()
-            print("obj saved")
-        elif not change:
-            print("not change")
-            data = async_to_sync(get_telegram_channel_info_by_link)(obj.url)
-            print(data)
-            obj.channel_id = data[0]
-            obj.title = data[1]
-            obj.save()
-            print("obj saved")
+    # def save_model(self, request, obj, form, change) -> "TelegramChannel":
+    #     if change:
+    #         print("change")
+    #         data = async_to_sync(get_telegram_channel_info_by_link)(obj.url)
+    #         print(data)
+    #         obj.channel_id = data[0]
+    #         obj.title = data[1]
+    #         obj.save()
+    #         print("obj saved")
+    #     elif not change:
+    #         print("not change")
+    #         data = async_to_sync(get_telegram_channel_info_by_link)(obj.url)
+    #         print(data)
+    #         obj.channel_id = data[0]
+    #         obj.title = data[1]
+    #         obj.save()
+    #         print("obj saved")
 
-        super().save_model(request, obj, form, change)
+    #     super().save_model(request, obj, form, change)
 
 
 # Register your models here.
