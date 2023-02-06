@@ -8,6 +8,7 @@ from channels.db import database_sync_to_async
 
 from telethon import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
+from telethon.tl.functions.channels import JoinChannelRequest
 from telethon.tl.patched import Message
 from telethon.tl.types import PeerChannel, PeerUser
 
@@ -21,7 +22,7 @@ async def start_parsing(channel_ids: List[int], post_count: int) -> None:
     print("start parse")
     channel_ids = await get_telegram_channels_by_ids(channel_ids=channel_ids)
 
-    client = TelegramClient('79608711591', api_id, api_hash)
+    client = TelegramClient('79851659771', api_id, api_hash)
     await client.start()
 
     await parse_for_channels(client, channel_ids, post_count)
@@ -31,7 +32,7 @@ async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = 
     print("start mailing")
     user_ids = await get_telegram_users_by_ids(user_ids=user_ids)
 
-    client = TelegramClient('79608711591', api_id, api_hash)
+    client = TelegramClient('79851659771', api_id, api_hash)
     await client.start()
 
     await mailing_users(client, user_ids, text, file)
@@ -124,6 +125,16 @@ async def parse_for_channels(client: TelegramClient, channel_ids: List[int], pos
     print("parser completed")
     await create_telegram_users(users)
     print("new users saved.")
+
+
+async def get_telegram_channel_info_by_link(link: str) -> tuple:
+    client = TelegramClient('79851659771', api_id, api_hash)
+    await client.start()
+
+    channel = await client.get_entity(link)
+    await client(JoinChannelRequest(channel))
+
+    return (channel.id, channel.title)
 
 
 @database_sync_to_async
