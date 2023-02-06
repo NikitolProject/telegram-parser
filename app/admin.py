@@ -17,8 +17,8 @@ class TelegramChannelAdmin(admin.ModelAdmin):
         pass
 
 
-class TelegramChannelAdmin(admin.ModelAdmin):
-    list_display = ('channel_id_tag', 'title_tag')
+class TelegramUserAdmin(admin.ModelAdmin):
+    list_display = ('user_id_tag', 'username_tag')
     actions = ['start_malling']
 
     @action_malling_form(MailingForm)
@@ -28,4 +28,4 @@ class TelegramChannelAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(TelegramChannel, TelegramChannelAdmin)    
-admin.site.register(TelegramUser)
+admin.site.register(TelegramUser, TelegramUserAdmin)
