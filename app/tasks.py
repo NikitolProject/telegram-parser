@@ -42,13 +42,12 @@ async def start_mailing(user_ids: List[int], text: str, file: InMemoryUploadedFi
 async def mailing_users(client: TelegramClient, user_ids: List[int], text: str, file: InMemoryUploadedFile = None) -> None:
     print("start mailing users")
     for user_id in user_ids:
-        with contextlib.suppress(Exception):
-            user = await client.get_entity(PeerUser(user_id))
+        user = await client.get_entity(PeerUser(user_id))
 
-            if file:
-                await client.send_file(user, file.read(), caption=text)
-            else:
-                await client.send_message(user, text)
+        if file:
+            await client.send_file(user, file.read(), caption=text)
+        else:
+            await client.send_message(user, text)
         
         await asyncio.sleep(5)
 
