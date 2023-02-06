@@ -1,5 +1,8 @@
+import io
 import asyncio
 import threading
+
+import imageio
 
 from django.shortcuts import render, redirect
 
@@ -42,10 +45,18 @@ def start_malling(request):
     print(request.POST)
     print(request.FILES)
 
-    if request.FILES:
-        file: InMemoryUploadedFile = form.cleaned_data['media']
-        print(file.content_type)
-        file = file.read()
+    if request.FILES and form.cleaned_data['media'].content_type != "video/mp4":
+        file = form.cleaned_data['media'].read()
+    elif request.FILES and form.cleaned_data['media'].content_type == "video/mp4":
+        print("process convert video to gif...")
+        video = form.cleaned_data['media'].read()
+        frames = imageio.mimread(video, plugin='pyav')
+
+        gif_bytes = io.BytesIO()
+        imageio.mimsave(gif_bytes, frames, format='gif')
+
+        file = gif_bytes.getvalue()
+        print("convert success")
 
     start_background_mailing_loop(request, form, file)
 
