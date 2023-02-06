@@ -90,7 +90,7 @@ def run_async_mailing_loop(loop, request, form, file):
     asyncio.set_event_loop(loop)
     loop.run_until_complete(
         start_mailing(
-            [int(uid) for uid in request.POST['_selected_action']], 
+            request.POST['_selected_action'], 
             form.cleaned_data['text'], file
         )
     )

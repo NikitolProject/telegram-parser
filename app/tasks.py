@@ -150,7 +150,7 @@ def get_telegram_channels_by_ids(channel_ids: List[int]) -> List[int]:
 
 @database_sync_to_async
 def get_telegram_users_by_ids(user_ids: List[int]) -> List[int]:
-    print(TelegramUser.objects.all().first().pk)
+    print(type(user_ids))
     return [obj.user_id for obj in TelegramUser.objects.in_bulk(user_ids).values()]
 
 
