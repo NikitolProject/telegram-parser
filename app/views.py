@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from app.forms import ParserForm, MailingForm
 from app.tasks import start_parsing, start_mailing
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 def start_parse(request):
@@ -42,7 +43,9 @@ def start_malling(request):
     print(request.FILES)
 
     if request.FILES:
-        file = form.cleaned_data['media'].read()
+        file: InMemoryUploadedFile = form.cleaned_data['media']
+        print(file.content_type)
+        file = file.read()
 
     start_background_mailing_loop(request, form, file)
 
