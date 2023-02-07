@@ -1,3 +1,4 @@
+import ast
 import asyncio
 import contextlib
 
@@ -151,9 +152,9 @@ def get_telegram_channels_by_ids(channel_ids: List[int]) -> List[int]:
 def get_telegram_users_by_ids(user_ids: List[int]) -> List[str]:
     print(user_ids)
     print(type(user_ids))
-    if isinstance(user_ids, str):
+    if isinstance(user_ids, str) and not user_ids.startswith("["):
         return [obj.username for obj in TelegramUser.objects.in_bulk([int(user_ids)]).values()]
-    return [obj.username for obj in TelegramUser.objects.in_bulk([int(uid) for uid in user_ids]).values()]
+    return [obj.username for obj in TelegramUser.objects.in_bulk([int(uid) for uid in ast.literal_eval(user_ids)]).values()]
 
 
 @database_sync_to_async
