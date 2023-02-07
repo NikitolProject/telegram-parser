@@ -87,6 +87,7 @@ def run_async_parsing_loop(loop, request, form):
 
 
 def run_async_mailing_loop(loop, request, form, file):
+    print(request.POST['_selected_action'])
     asyncio.set_event_loop(loop)
     loop.run_until_complete(
         start_mailing(
