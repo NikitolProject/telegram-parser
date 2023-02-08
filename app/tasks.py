@@ -51,15 +51,21 @@ async def mailing_users(client: TelegramClient, user_names: List[str], text: str
         # with contextlib.suppress(Exception):
         user = await client.get_entity(user_name)
 
+        texts = [
+            "БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️\n\nЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi",
+            "Закрытый клуб стоимостью 5000₽ бесплатно для первых 40 человек 💰\n\nВСТУПИТЬ БЕСПЛАТНО — https://t.me/+02msrMgQhaJiMWVi",
+            "📌 Вы выиграли 10.000 рублей!\nИменно столько стоит доступ в наш платный VIP-канал! Кто успеет - останется в нем навсегда!\n\nПоследние 5 сигналов:\n1.98 ✅\n1.63 ✅\n1.49 ✅\n2.85 ✅\n1.76 ✅\n\nПримем БЕСПЛАТНО только 30 человек, дальше вход 10.000₽\n\nЖми 👇 👇 👇\nhttps://t.me/+f_ir2f1oQ1ZlNjMy"
+        ]
+
         # if file:
         #     with BytesIO(file) as bytes_io:
         #         await client.send_file(user, bytes_io, caption=text)
         # else:
         #     await client.send_message(user, text)
 
-        rand_texts = ['Привет, как дела?', 'Привет, что делаешь?', 'Привет, напиши, как будешь свободен', 'Ты тут? Отпишись, пожалуйста', 'Хай, ты тут?']
+        # rand_texts = ['Привет, как дела?', 'Привет, что делаешь?', 'Привет, напиши, как будешь свободен', 'Ты тут? Отпишись, пожалуйста', 'Хай, ты тут?']
 
-        await client.send_message(user, random.choice(rand_texts))
+        await client.send_message(user, random.choice(texts))
         message_count_sent += 1 if message_count_sent != 48 else 0
         
         await asyncio.sleep(random.randint(13, 60) if message_count_sent != 48 else 5 * 60)
