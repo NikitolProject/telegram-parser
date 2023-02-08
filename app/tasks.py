@@ -45,21 +45,24 @@ async def mailing_users(client: TelegramClient, user_names: List[str], text: str
     message_count_sent = 0
 
     for user_name in user_names:
-        with contextlib.suppress(Exception):
-            user = await client.get_entity(user_name)
+        if user_name is None or user_name == "None":
+            continue
 
-            # if file:
-            #     with BytesIO(file) as bytes_io:
-            #         await client.send_file(user, bytes_io, caption=text)
-            # else:
-            #     await client.send_message(user, text)
+        # with contextlib.suppress(Exception):
+        user = await client.get_entity(user_name)
 
-            rand_texts = ['Привет, как дела?', 'Привет, что делаешь?', 'Привет, напиши, как будешь свободен', 'Ты тут? Отпишись, пожалуйста', 'Хай, ты тут?']
+        # if file:
+        #     with BytesIO(file) as bytes_io:
+        #         await client.send_file(user, bytes_io, caption=text)
+        # else:
+        #     await client.send_message(user, text)
 
-            await client.send_message(user, random.choice(rand_texts))
-            message_count_sent += 1 if message_count_sent != 48 else 0
-            
-            await asyncio.sleep(random.randint(13, 60) if message_count_sent != 48 else 5 * 60)
+        rand_texts = ['Привет, как дела?', 'Привет, что делаешь?', 'Привет, напиши, как будешь свободен', 'Ты тут? Отпишись, пожалуйста', 'Хай, ты тут?']
+
+        await client.send_message(user, random.choice(rand_texts))
+        message_count_sent += 1 if message_count_sent != 48 else 0
+        
+        await asyncio.sleep(random.randint(13, 60) if message_count_sent != 48 else 5 * 60)
 
     admin = await client.get_entity('nick_test_for_bots')
     await client.send_message(admin, f"⚡️ Рассылка на {len(user_names)} пользователей успешно завершена!")
