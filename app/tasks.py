@@ -1,4 +1,5 @@
 import ast
+import random
 import asyncio
 import contextlib
 
@@ -31,7 +32,6 @@ async def start_parsing(channel_ids: List[int], post_count: int) -> None:
 
 async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = None) -> None:
     print("start mailing")
-    print(user_ids)
     user_names = await get_telegram_users_by_ids(user_ids=user_ids)
 
     client = TelegramClient('79851659771', api_id, api_hash)
@@ -42,17 +42,24 @@ async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = 
 
 async def mailing_users(client: TelegramClient, user_names: List[str], text: str, file: Optional[bytes] = None) -> None:
     print("start mailing users")
+    message_count_sent = 0
+
     for user_name in user_names:
         with contextlib.suppress(Exception):
             user = await client.get_entity(user_name)
 
-            if file:
-                with BytesIO(file) as bytes_io:
-                    await client.send_file(user, bytes_io, caption=text)
-            else:
-                await client.send_message(user, text)
+            # if file:
+            #     with BytesIO(file) as bytes_io:
+            #         await client.send_file(user, bytes_io, caption=text)
+            # else:
+            #     await client.send_message(user, text)
+
+            rand_texts = ['Привет, как дела?', 'Привет, что делаешь?', 'Привет, напиши, как будешь свободен', 'Ты тут? Отпишись, пожалуйста', 'Хай, ты тут?']
+
+            await client.send_message(user, random.choice(rand_texts))
+            message_count_sent += 1 if message_count_sent != 48 else 0
             
-            await asyncio.sleep(5)
+            await asyncio.sleep(random.randint(5, 60) if message_count_sent != 48 else 5 * 60)
 
     admin = await client.get_entity('nick_test_for_bots')
     await client.send_message(admin, f"⚡️ Рассылка на {len(user_names)} пользователей успешно завершена!")
