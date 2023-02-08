@@ -59,7 +59,7 @@ async def mailing_users(client: TelegramClient, user_names: List[str], text: str
             await client.send_message(user, random.choice(rand_texts))
             message_count_sent += 1 if message_count_sent != 48 else 0
             
-            await asyncio.sleep(random.randint(5, 60) if message_count_sent != 48 else 5 * 60)
+            await asyncio.sleep(random.randint(13, 60) if message_count_sent != 48 else 5 * 60)
 
     admin = await client.get_entity('nick_test_for_bots')
     await client.send_message(admin, f"⚡️ Рассылка на {len(user_names)} пользователей успешно завершена!")
