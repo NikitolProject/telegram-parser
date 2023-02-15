@@ -57,10 +57,10 @@ async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = 
     print("start mailing")
     user_names = await get_telegram_users_by_ids(user_ids=user_ids)
 
-    user_names_lists = split_list(user_names, 3)
+    user_names_lists = split_list(user_names, 2)
     coroutines = [
         start_session_mailing(session[0], session[1], text, file) 
-        for session in [('telethon4', user_names)]
+        for session in [('telethon4', user_names_lists[0]), ('79608711591', user_names_lists[1])]
     ]
     await asyncio.gather(*coroutines)
 
