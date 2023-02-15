@@ -109,14 +109,17 @@ async def mailing_users(client: TelegramClient, user_names: List[str], text: str
                     text = "БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️ ЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi"
 
             await client.send_message(user, text)
-            message_count_sent += 1 if message_count_sent != 48 else 0
-            
             print(f"{user_name} получил сообщение!")
-            await asyncio.sleep(random.randint(13, 60) if message_count_sent != 48 else 5 * 60)
+            
         except ValueError as exception:
             print(exception)
         except errors.rpcerrorlist.PeerFloodError as exception:
             print(exception)
+        except errors.rpcerrorlist.ChatWriteForbiddenError as exception:
+            print(exception)
+
+        message_count_sent += 1 if message_count_sent != 48 else 0
+        await asyncio.sleep(random.randint(13, 60) if message_count_sent != 48 else 5 * 60)
 
     admin = await client.get_entity('nick_test_for_bots')
     await client.send_message(admin, f"⚡️ Рассылка на {len(user_names)} пользователей успешно завершена!")
