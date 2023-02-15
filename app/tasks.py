@@ -18,8 +18,8 @@ from telethon.tl.types import PeerChannel, PeerUser
 
 from app.models import TelegramChannel, TelegramUser
 
-api_id = 14429679
-api_hash = '5a91e2bfd9b57d681a2095b13af3072f'
+api_id = 3856575
+api_hash = '1d6df36bd42c437da9d0ce81dc0f3057'
 
 
 def split_list(lst: list, n: int) -> list:
