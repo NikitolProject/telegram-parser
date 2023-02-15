@@ -60,8 +60,7 @@ async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = 
     user_names_lists = split_list(user_names, 3)
     coroutines = [
         start_session_mailing(session[0], session[1], text, file) 
-        for session in [('telethon', user_names_lists[0]), 
-                        ('telethon2', user_names_lists[1]), ('telethon3', user_names_lists[2])]
+        for session in [('telethon4', user_names)]
     ]
     await asyncio.gather(*coroutines)
 
