@@ -99,11 +99,14 @@ async def mailing_users(client: TelegramClient, user_names: List[str], text: str
             # rand_texts = ['Привет, как дела?', 'Привет, что делаешь?', 'Привет, напиши, как будешь свободен', 'Ты тут? Отпишись, пожалуйста', 'Хай, ты тут?']
 
             async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    'https://chestnut-bustling-allspice.glitch.me/api/v1/question', 
-                    json={'text': 'Перефразируй: БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️ ЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi'}
-                ) as response:
-                    text = (await response.json())['answer'].replace("\n\n", "")
+                try:
+                    async with session.get(
+                        'https://chestnut-bustling-allspice.glitch.me/api/v1/question', 
+                        json={'text': 'Перефразируй: БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️ ЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi'}
+                    ) as response:
+                        text = (await response.json())['answer'].replace("\n\n", "")
+                except aiohttp.client_exceptions.ContentTypeError:
+                    text = "БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️ ЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi"
 
             await client.send_message(user, text)
             message_count_sent += 1 if message_count_sent != 48 else 0
