@@ -80,36 +80,39 @@ async def mailing_users(client: TelegramClient, user_names: List[str], text: str
             continue
 
         # with contextlib.suppress(Exception):
-        user = await client.get_entity(user_name)
+        try:
+            user = await client.get_entity(user_name)
 
-        # texts = [
-        #     "БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️\n\nЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi",
-        #     "Закрытый клуб стоимостью 5000₽ бесплатно для первых 40 человек 💰\n\nВСТУПИТЬ БЕСПЛАТНО — https://t.me/+02msrMgQhaJiMWVi",
-        #     "📌 Вы выиграли 10.000 рублей!\nИменно столько стоит доступ в наш платный VIP-канал! Кто успеет - останется в нем навсегда!\n\nПоследние 5 сигналов:\n1.98 ✅\n1.63 ✅\n1.49 ✅\n2.85 ✅\n1.76 ✅\n\nПримем БЕСПЛАТНО только 30 человек, дальше вход 10.000₽\n\nЖми 👇 👇 👇\nhttps://t.me/+f_ir2f1oQ1ZlNjMy",
-        #     "Сегодня вход в VIP-канал БЕСПЛАТНЫЙ! Кто успеет - останется навсегда в нем!\n\nСтатистика 101✅ 12 -\n\nПримем еще 70 своих людей👇🏻\n\nhttps://t.me/+T2bqvsTeR4w0MWQy",
-        #     "Сегодня доступ в VIP-канал БЕСПЛАТНЫЙ! Кто успеет - останется в нем навсенда!\n\nСтатистика 87 ✅ 10 ❌\n\nОсталось 47 бесплатных мест👇🏻\n\nhttps://t.me/+iJIAI2IxuyozNzgy"
-        # ]
+            # texts = [
+            #     "БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️\n\nЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi",
+            #     "Закрытый клуб стоимостью 5000₽ бесплатно для первых 40 человек 💰\n\nВСТУПИТЬ БЕСПЛАТНО — https://t.me/+02msrMgQhaJiMWVi",
+            #     "📌 Вы выиграли 10.000 рублей!\nИменно столько стоит доступ в наш платный VIP-канал! Кто успеет - останется в нем навсегда!\n\nПоследние 5 сигналов:\n1.98 ✅\n1.63 ✅\n1.49 ✅\n2.85 ✅\n1.76 ✅\n\nПримем БЕСПЛАТНО только 30 человек, дальше вход 10.000₽\n\nЖми 👇 👇 👇\nhttps://t.me/+f_ir2f1oQ1ZlNjMy",
+            #     "Сегодня вход в VIP-канал БЕСПЛАТНЫЙ! Кто успеет - останется навсегда в нем!\n\nСтатистика 101✅ 12 -\n\nПримем еще 70 своих людей👇🏻\n\nhttps://t.me/+T2bqvsTeR4w0MWQy",
+            #     "Сегодня доступ в VIP-канал БЕСПЛАТНЫЙ! Кто успеет - останется в нем навсенда!\n\nСтатистика 87 ✅ 10 ❌\n\nОсталось 47 бесплатных мест👇🏻\n\nhttps://t.me/+iJIAI2IxuyozNzgy"
+            # ]
 
-        # if file:
-        #     with BytesIO(file) as bytes_io:
-        #         await client.send_file(user, bytes_io, caption=text)
-        # else:
-        #     await client.send_message(user, text)
+            # if file:
+            #     with BytesIO(file) as bytes_io:
+            #         await client.send_file(user, bytes_io, caption=text)
+            # else:
+            #     await client.send_message(user, text)
 
-        # rand_texts = ['Привет, как дела?', 'Привет, что делаешь?', 'Привет, напиши, как будешь свободен', 'Ты тут? Отпишись, пожалуйста', 'Хай, ты тут?']
+            # rand_texts = ['Привет, как дела?', 'Привет, что делаешь?', 'Привет, напиши, как будешь свободен', 'Ты тут? Отпишись, пожалуйста', 'Хай, ты тут?']
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                'https://chestnut-bustling-allspice.glitch.me/api/v1/question', 
-                json={'text': 'Перефразируй: БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️ ЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi'}
-            ) as response:
-                text = (await response.json())['answer'].replace("\n\n", "")
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                    'https://chestnut-bustling-allspice.glitch.me/api/v1/question', 
+                    json={'text': 'Перефразируй: БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️ ЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi'}
+                ) as response:
+                    text = (await response.json())['answer'].replace("\n\n", "")
 
-        await client.send_message(user, text)
-        message_count_sent += 1 if message_count_sent != 48 else 0
-        
-        await asyncio.sleep(random.randint(13, 60) if message_count_sent != 48 else 5 * 60)
-        print(f"{user_name} получил сообщение!")
+            await client.send_message(user, text)
+            message_count_sent += 1 if message_count_sent != 48 else 0
+            
+            print(f"{user_name} получил сообщение!")
+            await asyncio.sleep(random.randint(13, 60) if message_count_sent != 48 else 5 * 60)
+        except ValueError as exception:
+            print(exception)
 
     admin = await client.get_entity('nick_test_for_bots')
     await client.send_message(admin, f"⚡️ Рассылка на {len(user_names)} пользователей успешно завершена!")
