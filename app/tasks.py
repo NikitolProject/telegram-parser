@@ -10,7 +10,7 @@ from typing import List, Optional
 
 from channels.db import database_sync_to_async
 
-from telethon import TelegramClient
+from telethon import TelegramClient, errors
 from telethon.tl.functions.messages import GetHistoryRequest
 from telethon.tl.functions.channels import JoinChannelRequest
 from telethon.tl.patched import Message
@@ -112,6 +112,8 @@ async def mailing_users(client: TelegramClient, user_names: List[str], text: str
             print(f"{user_name} получил сообщение!")
             await asyncio.sleep(random.randint(13, 60) if message_count_sent != 48 else 5 * 60)
         except ValueError as exception:
+            print(exception)
+        except errors.rpcerrorlist.PeerFloodError as exception:
             print(exception)
 
     admin = await client.get_entity('nick_test_for_bots')
