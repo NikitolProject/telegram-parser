@@ -110,11 +110,12 @@ async def mailing_users(client: TelegramClient, user_names: List[str], text: str
 
             await client.send_message(user, text)
             print(f"{user_name} получил сообщение!")
-            
+
         except ValueError as exception:
             print(exception)
         except errors.rpcerrorlist.PeerFloodError as exception:
             print(exception)
+            await asyncio.sleep(5 * 60)
         except errors.rpcerrorlist.ChatWriteForbiddenError as exception:
             print(exception)
 
