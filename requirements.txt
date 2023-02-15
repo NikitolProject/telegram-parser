@@ -1,4 +1,5 @@
 asgiref==3.6.0
+aiohttp==3.8.4
 channels==4.0.0
 Django==4.1.6
 django-background-tasks==1.2.5
