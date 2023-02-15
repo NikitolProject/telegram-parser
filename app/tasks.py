@@ -1,7 +1,9 @@
 import ast
 import random
 import asyncio
+import aiohttp
 import contextlib
+import socks
 
 from io import BytesIO
 from typing import List, Optional
@@ -20,6 +22,27 @@ api_id = 14429679
 api_hash = '5a91e2bfd9b57d681a2095b13af3072f'
 
 
+def split_list(lst: list, n: int) -> list:
+    """
+    Разделяет список `lst` на `n` подсписков.
+    Если `lst` нельзя разделить на ровное количество подсписков, остаток остается в последнем подсписке.
+    """
+    split_size = len(lst) // n
+    remainder = len(lst) % n
+
+    result = []
+    start = 0
+    for i in range(n):
+        end = start + split_size
+        if i < remainder:
+            end += 1
+
+        result.append(lst[start:end])
+        start = end
+
+    return result
+
+
 async def start_parsing(channel_ids: List[int], post_count: int) -> None:
     print("start parse")
     channel_ids = await get_telegram_channels_by_ids(channel_ids=channel_ids)
@@ -34,10 +57,18 @@ async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = 
     print("start mailing")
     user_names = await get_telegram_users_by_ids(user_ids=user_ids)
 
-    client = TelegramClient('79851659771', api_id, api_hash)
-    await client.start()
+    user_names_lists = split_list(user_names, 3)
+    coroutines = [
+        start_session_mailing(session[0], session[1], text, file) 
+        for session in [('telethon', user_names_lists[0]), 
+                        ('telethon', user_names_lists[1]), ('telethon', user_names_lists[2])]
+    ]
+    await asyncio.gather(*coroutines)
 
-    await mailing_users(client, user_names, text, file)
+
+async def start_session_mailing(session: str, user_names: List[str], text: str, file: Optional[bytes] = None) -> None:
+    async with TelegramClient(session, api_id, api_hash, proxy=(socks.SOCKS5, '37.18.73.60', 5566)) as client:
+        await mailing_users(client, user_names, text, file)
 
 
 async def mailing_users(client: TelegramClient, user_names: List[str], text: str, file: Optional[bytes] = None) -> None:
@@ -51,13 +82,13 @@ async def mailing_users(client: TelegramClient, user_names: List[str], text: str
         # with contextlib.suppress(Exception):
         user = await client.get_entity(user_name)
 
-        texts = [
-            "БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️\n\nЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi",
-            "Закрытый клуб стоимостью 5000₽ бесплатно для первых 40 человек 💰\n\nВСТУПИТЬ БЕСПЛАТНО — https://t.me/+02msrMgQhaJiMWVi",
-            "📌 Вы выиграли 10.000 рублей!\nИменно столько стоит доступ в наш платный VIP-канал! Кто успеет - останется в нем навсегда!\n\nПоследние 5 сигналов:\n1.98 ✅\n1.63 ✅\n1.49 ✅\n2.85 ✅\n1.76 ✅\n\nПримем БЕСПЛАТНО только 30 человек, дальше вход 10.000₽\n\nЖми 👇 👇 👇\nhttps://t.me/+f_ir2f1oQ1ZlNjMy",
-            "Сегодня вход в VIP-канал БЕСПЛАТНЫЙ! Кто успеет - останется навсегда в нем!\n\nСтатистика 101✅ 12 -\n\nПримем еще 70 своих людей👇🏻\n\nhttps://t.me/+T2bqvsTeR4w0MWQy",
-            "Сегодня доступ в VIP-канал БЕСПЛАТНЫЙ! Кто успеет - останется в нем навсенда!\n\nСтатистика 87 ✅ 10 ❌\n\nОсталось 47 бесплатных мест👇🏻\n\nhttps://t.me/+iJIAI2IxuyozNzgy"
-        ]
+        # texts = [
+        #     "БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️\n\nЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi",
+        #     "Закрытый клуб стоимостью 5000₽ бесплатно для первых 40 человек 💰\n\nВСТУПИТЬ БЕСПЛАТНО — https://t.me/+02msrMgQhaJiMWVi",
+        #     "📌 Вы выиграли 10.000 рублей!\nИменно столько стоит доступ в наш платный VIP-канал! Кто успеет - останется в нем навсегда!\n\nПоследние 5 сигналов:\n1.98 ✅\n1.63 ✅\n1.49 ✅\n2.85 ✅\n1.76 ✅\n\nПримем БЕСПЛАТНО только 30 человек, дальше вход 10.000₽\n\nЖми 👇 👇 👇\nhttps://t.me/+f_ir2f1oQ1ZlNjMy",
+        #     "Сегодня вход в VIP-канал БЕСПЛАТНЫЙ! Кто успеет - останется навсегда в нем!\n\nСтатистика 101✅ 12 -\n\nПримем еще 70 своих людей👇🏻\n\nhttps://t.me/+T2bqvsTeR4w0MWQy",
+        #     "Сегодня доступ в VIP-канал БЕСПЛАТНЫЙ! Кто успеет - останется в нем навсенда!\n\nСтатистика 87 ✅ 10 ❌\n\nОсталось 47 бесплатных мест👇🏻\n\nhttps://t.me/+iJIAI2IxuyozNzgy"
+        # ]
 
         # if file:
         #     with BytesIO(file) as bytes_io:
@@ -67,10 +98,18 @@ async def mailing_users(client: TelegramClient, user_names: List[str], text: str
 
         # rand_texts = ['Привет, как дела?', 'Привет, что делаешь?', 'Привет, напиши, как будешь свободен', 'Ты тут? Отпишись, пожалуйста', 'Хай, ты тут?']
 
-        await client.send_message(user, random.choice(texts))
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                'https://chestnut-bustling-allspice.glitch.me/api/v1/question', 
+                json={'text': 'Перефразируй: БЕСПЛАТНАЯ СТАВКА НА ФУТБОЛ ⚽️ ЗАБРАТЬ ТУТ 👉 https://t.me/+eK4CkR8uCyc5NDZi'}
+            ) as response:
+                text = (await response.json())['answer'].replace("\n\n", "")
+
+        await client.send_message(user, text)
         message_count_sent += 1 if message_count_sent != 48 else 0
         
         await asyncio.sleep(random.randint(13, 60) if message_count_sent != 48 else 5 * 60)
+        print(f"{user_name} получил сообщение!")
 
     admin = await client.get_entity('nick_test_for_bots')
     await client.send_message(admin, f"⚡️ Рассылка на {len(user_names)} пользователей успешно завершена!")
