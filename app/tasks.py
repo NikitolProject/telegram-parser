@@ -201,7 +201,7 @@ async def parse_for_channels(client: TelegramClient, channel_ids: List[int], pos
 
 
 async def get_telegram_channel_info_by_link(link: str) -> tuple:
-    client = TelegramClient('79851659771', api_id, api_hash)
+    client = TelegramClient('79608711591', api_id, api_hash)
     await client.start()
     print("start parser")
 
