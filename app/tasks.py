@@ -52,6 +52,8 @@ async def start_parsing(channel_ids: List[int], post_count: int) -> None:
 
     await parse_for_channels(client, channel_ids, post_count)
 
+    await client.disconnect()
+
 
 async def start_mailing(user_ids: List[int], text: str, file: Optional[bytes] = None) -> None:
     print("start mailing")
@@ -209,6 +211,7 @@ async def get_telegram_channel_info_by_link(link: str) -> tuple:
     channel = await client.get_entity(link)
     print(channel)
     print("join channel")
+    await client.disconnect()
 
     return (str(channel.id), channel.title)
 
