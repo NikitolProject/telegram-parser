@@ -47,7 +47,7 @@ async def start_parsing(channel_ids: List[int], post_count: int) -> None:
     print("start parse")
     channel_ids = await get_telegram_channels_by_ids(channel_ids=channel_ids)
 
-    client = TelegramClient('79851659771', api_id, api_hash)
+    client = TelegramClient('79608711591', api_id, api_hash)
     await client.start()
 
     await parse_for_channels(client, channel_ids, post_count)
@@ -133,7 +133,7 @@ async def parse_for_channels(client: TelegramClient, channel_ids: List[int], pos
         channel = await client.get_entity(PeerChannel(int(channel_id)))
 
         offset_id = 0
-        limit = 100 if post_count >= 100 else post_count
+        limit = 1000 if post_count >= 100 else post_count
         final_limit = 0 if post_count >= 100 and post_count % 100 == 0 or post_count < 100 else post_count % 100
         current_post_count = post_count
 
@@ -160,9 +160,10 @@ async def parse_for_channels(client: TelegramClient, channel_ids: List[int], pos
             all_messages.extend(messages)
             offset_id = messages[len(messages) - 1].id
             current_post_count -= limit if post_count >= 100 and current_post_count >= 100 or post_count < 100 else final_limit
+            print(messages)
 
         offset_id = 0
-        limit = 100
+        limit = 1000
 
         for message in all_messages:
             with contextlib.suppress(Exception):
@@ -192,6 +193,7 @@ async def parse_for_channels(client: TelegramClient, channel_ids: List[int], pos
                         users.add(f"{user.id},{user.username}")
                     
                     offset_id = messages[len(messages) - 1].id
+                print(messages)
 
     print("parser completed")
     await create_telegram_users(users)
