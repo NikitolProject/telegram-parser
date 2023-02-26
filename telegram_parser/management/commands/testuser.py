@@ -20,7 +20,7 @@ class Command(BaseCommand):
         """
         A command handler that creates an administrator account already based on the specified data.
         """
-        for user in TelegramUser.objects.all().reverse():
+        for user in TelegramUser.objects.filter(user_id__contains="PeerUser(user_id="):
             user_id = PeerUser(int(user.user_id.replace('PeerUser(user_id=', '').replace(')', '')))
 
             client = TelegramClient('79608711591', api_id, api_hash)
