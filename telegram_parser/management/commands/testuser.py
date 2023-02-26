@@ -28,23 +28,21 @@ class Command(BaseCommand):
         client.start()
         users = []
 
-        for user in TelegramUser.objects.filter(user_id__contains="PeerUser(user_id=")[:10000]:
+        for user in TelegramUser.objects.filter(user_id__contains="PeerUser(user_id=")[:100]:
             user_id = PeerUser(int(user.user_id.replace('PeerUser(user_id=', '').replace(')', '')))
 
             user = client.get_entity(user_id)
-            print(user)
             users.append(user)
 
         chat = client.get_entity(PeerChannel(1817095203))
 
-        invited_users = []
+        # invited_users = []
 
         for user in users:
-            invited_users.append(user)
+            # invited_users.append(user)
 
-            if len(invited_users) == 500:
-                client(InviteToChannelRequest(chat, users))
-                time.sleep(random.randint(5, 20))
-                invited_users = []
+            # if len(invited_users) == 500:
+            print(client(InviteToChannelRequest(chat, [user])))
+            # time.sleep(random.randint(5, 20))
 
         client.disconnect()
