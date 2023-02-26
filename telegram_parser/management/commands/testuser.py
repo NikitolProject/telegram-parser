@@ -24,7 +24,7 @@ class Command(BaseCommand):
         """
         A command handler that creates an administrator account already based on the specified data.
         """
-        client = TelegramClient('639958658627', api_id, api_hash)
+        client = TelegramClient('79608711591', api_id, api_hash)
         client.start()
         users = []
 
