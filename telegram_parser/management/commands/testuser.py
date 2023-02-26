@@ -29,10 +29,14 @@ class Command(BaseCommand):
         users = []
 
         for user in TelegramUser.objects.filter(user_id__contains="PeerUser(user_id=")[:100]:
-            user_id = PeerUser(int(user.user_id.replace('PeerUser(user_id=', '').replace(')', '')))
+            try:
+                user_id = PeerUser(int(user.user_id.replace('PeerUser(user_id=', '').replace(')', '')))
 
-            user = client.get_entity(user_id)
-            users.append(user)
+                user = client.get_entity(user_id)
+                users.append(user)
+            except ValueError:
+                print(f"Not found user {user.user_id}")
+                continue
 
         chat = client.get_entity(PeerChannel(1817095203))
 
