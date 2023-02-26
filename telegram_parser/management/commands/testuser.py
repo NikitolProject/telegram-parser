@@ -1,7 +1,11 @@
+import time
+import random
+
 from django.core.management.base import BaseCommand
 
 from telethon.sync import TelegramClient
 from telethon.tl.types import PeerChannel, PeerUser
+from telethon.tl.functions.channels import InviteToChannelRequest
 
 from app.models import TelegramUser
 
@@ -24,14 +28,23 @@ class Command(BaseCommand):
         client.start()
         users = []
 
-        # for user in TelegramUser.objects.filter(user_id__contains="PeerUser(user_id=")[:10000]:
-        #     user_id = PeerUser(int(user.user_id.replace('PeerUser(user_id=', '').replace(')', '')))
+        for user in TelegramUser.objects.filter(user_id__contains="PeerUser(user_id=")[:10000]:
+            user_id = PeerUser(int(user.user_id.replace('PeerUser(user_id=', '').replace(')', '')))
 
-        #     user = client.get_entity(user_id)
-        #     print(user)
-        #     users.append(user)
+            user = client.get_entity(user_id)
+            print(user)
+            users.append(user)
 
         chat = client.get_entity(PeerChannel(1817095203))
-        print(chat)
+
+        invited_users = []
+
+        for user in users:
+            invited_users.append(user)
+
+            if len(invited_users) == 500:
+                client(InviteToChannelRequest(chat, users))
+                time.sleep(random.randint(5, 20))
+                invited_users = []
 
         client.disconnect()
