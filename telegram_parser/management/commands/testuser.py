@@ -16,4 +16,4 @@ class Command(BaseCommand):
         """
         A command handler that creates an administrator account already based on the specified data.
         """
-        print(PeerUser(TelegramUser.objects.last().user_id))
+        print(PeerUser(int(TelegramUser.objects.last().user_id.replace('PeerUser(user_id=', '').replace(')', ''))))
