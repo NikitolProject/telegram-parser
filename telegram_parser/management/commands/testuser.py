@@ -1,5 +1,7 @@
 from django.core.management.base import BaseCommand
 
+from telethon.tl.types import PeerChannel, PeerUser
+
 from app.models import TelegramUser
 
 
@@ -14,4 +16,4 @@ class Command(BaseCommand):
         """
         A command handler that creates an administrator account already based on the specified data.
         """
-        print(TelegramUser.objects.last())
+        print(PeerUser(TelegramUser.objects.last().user_id))
