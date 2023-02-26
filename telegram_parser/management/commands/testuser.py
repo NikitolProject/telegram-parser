@@ -7,6 +7,7 @@ from django.core.management.base import BaseCommand
 from telethon.sync import TelegramClient
 from telethon.tl.types import PeerChannel, PeerUser
 from telethon.tl.functions.channels import InviteToChannelRequest
+from telethon.errors.rpcerrorlist import FloodWaitError
 
 from app.models import TelegramUser
 
@@ -41,6 +42,8 @@ class Command(BaseCommand):
             except ValueError:
                 print(f"Not found user {user.user_id}")
                 continue
+            except FloodWaitError:
+                break
 
         print(len(phones))
 
@@ -48,17 +51,5 @@ class Command(BaseCommand):
             writer = csv.writer(fp, delimiter="\n")
             # writer.writerow(["your", "header", "foo"])  # write header
             writer.writerow(phones)
-
-        # chat = client.get_entity(PeerChannel(1817095203))
-
-        # invited_users = []
-
-        # for user in users:
-        #     invited_users.append(user)
-
-        #     if len(invited_users) == 50:
-        #         print(client(InviteToChannelRequest(chat, invited_users)))
-        #         time.sleep(random.randint(5, 20))
-        #         invited_users = []
 
         client.disconnect()
