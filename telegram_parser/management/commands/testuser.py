@@ -24,9 +24,11 @@ class Command(BaseCommand):
         """
         A command handler that creates an administrator account already based on the specified data.
         """
-        client = TelegramClient('79608711591', api_id, api_hash)
+        client = TelegramClient('79053911102', api_id, api_hash)
         client.start()
         users = []
+
+        print(client.get_me())
 
         for user in TelegramUser.objects.filter(user_id__contains="PeerUser(user_id=")[:100]:
             try:
@@ -38,16 +40,16 @@ class Command(BaseCommand):
                 print(f"Not found user {user.user_id}")
                 continue
 
-        chat = client.get_entity(PeerChannel(1817095203))
+        # chat = client.get_entity(PeerChannel(1817095203))
 
         invited_users = []
 
-        for user in users:
-            invited_users.append(user)
+        # for user in users:
+        #     invited_users.append(user)
 
-            if len(invited_users) == 50:
-                print(client(InviteToChannelRequest(chat, invited_users)))
-                time.sleep(random.randint(5, 20))
-                invited_users = []
+        #     if len(invited_users) == 50:
+        #         print(client(InviteToChannelRequest(chat, invited_users)))
+        #         time.sleep(random.randint(5, 20))
+        #         invited_users = []
 
         client.disconnect()
