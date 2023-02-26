@@ -14,4 +14,4 @@ class Command(BaseCommand):
         """
         A command handler that creates an administrator account already based on the specified data.
         """
-        print(TelegramUser.objects.first().user_id)
+        print(TelegramUser.objects.all()[-1].user_id)
