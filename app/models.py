@@ -10,6 +10,7 @@ class TelegramUser(models.Model):
 
     user_id = models.CharField(max_length=255, null=True, blank=True)
     username = models.CharField(max_length=255, null=True, blank=True)
+    phone = models.CharField(max_length=255, null=True, blank=True)
 
     def user_id_tag(self: "TelegramUser") -> str:
         return self.user_id

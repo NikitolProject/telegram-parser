@@ -191,8 +191,8 @@ async def parse_for_channels(client: TelegramClient, channel_ids: List[int], pos
 
                     for comment in messages:
                         user = await client.get_entity(comment.from_id)
-                        print(f"{comment.from_id},{user.username}")
-                        users.add(f"{comment.from_id},{user.username}")
+                        print(f"{comment.from_id},{user.username},{user.phone}")
+                        users.add(f"{comment.from_id},{user.username},{user.phone}")
                     
                     offset_id = messages[len(messages) - 1].id
                 print(messages)
@@ -234,4 +234,4 @@ def get_telegram_users_by_ids(user_ids: List[int]) -> List[str]:
 def create_telegram_users(users: List[str]) -> None:
     existing_user_ids = TelegramUser.objects.values_list('user_id', flat=True)
     new_users = [user.split(",") for user in users if user.split(",")[0] not in existing_user_ids]
-    TelegramUser.objects.bulk_create([TelegramUser(user_id=user[0], username=user[1]) for user in new_users])
+    TelegramUser.objects.bulk_create([TelegramUser(user_id=user[0], username=user[1], phone=user[2]) for user in new_users])
