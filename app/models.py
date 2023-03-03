@@ -22,6 +22,11 @@ class TelegramUser(models.Model):
     
     username_tag.short_description = "Username пользователя"
 
+    def phone_tag(self: "TelegramUser") -> str:
+        return self.phone
+    
+    phone_tag.short_description = "Телефон пользователя"
+
     def __str__(self: "TelegramUser") -> str:
         return self.username if self.username else f"Telegram User ({self.pk})"
 

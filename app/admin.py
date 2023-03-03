@@ -32,7 +32,7 @@ class TelegramChannelAdmin(admin.ModelAdmin):
 
 
 class TelegramUserAdmin(admin.ModelAdmin):
-    list_display = ('user_id_tag', 'username_tag')
+    list_display = ('user_id_tag', 'username_tag', 'phone_tag')
     actions = ['start_malling']
 
     @action_malling_form(MailingForm)
